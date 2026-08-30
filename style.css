@@ -1,0 +1,60 @@
+/* ===== TinyMobile — style.css =====
+ * สไตล์ของ "แผงตั้งค่าเรา" เท่านั้น (โหลดผ่าน manifest.json ตามปกติ) — ไม่ใช่ CSS ที่ปรับหน้าตาแชท
+ * ของจริงที่แก้แชทเขียนใน src/css.js เป็น <style> แทรกสด (ต้องจัดตำแหน่งใน <head> เอง)
+ * สืบทอดสีจากธีมผู้ใช้ 100% ผ่าน --SmartTheme* ตามธรรมเนียมเดียวกับ tinylive/tinyfeed
+ */
+
+.tinymobile-settings small {
+    display: block;
+    opacity: 0.7;
+    margin: 2px 0 8px 0;
+}
+
+.tinymobile-hint {
+    font-weight: normal;
+    opacity: 0.7;
+}
+
+.tinymobile-field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0;
+}
+
+.tinymobile-preset-diff {
+    margin-top: 8px;
+}
+
+.tinymobile-preset-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+
+.tinymobile-preset-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+    font-size: calc(var(--mainFontSize) * 0.9);
+}
+
+.tinymobile-preset-from {
+    opacity: 0.6;
+    text-align: right;
+}
+
+.tinymobile-preset-to {
+    color: var(--SmartThemeQuoteColor);
+    font-weight: 600;
+}
+
+.tinymobile-preset-empty {
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.tinymobile-preset-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}

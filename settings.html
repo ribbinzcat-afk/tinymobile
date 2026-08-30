@@ -1,0 +1,98 @@
+<div class="tinymobile-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b><i class="fa-solid fa-mobile-screen-button"></i> TinyMobile</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <label class="checkbox_label" for="tinymobile-enabled">
+                <input id="tinymobile-enabled" type="checkbox" />
+                <span>เปิดใช้งาน TinyMobile</span>
+            </label>
+            <small>ปรับหน้าตาแชทให้เข้ากับมือถือ (ข้อความเต็มบับเบิ้ล) + ลดงาน render ให้ลื่นขึ้น ใช้กับธีมพื้นฐานของ SillyTavern ได้เลย</small>
+
+            <div class="tinymobile-field-row">
+                <label for="tinymobile-apply-on">ให้ทำงานเมื่อไหร่</label>
+                <select id="tinymobile-apply-on" class="text_pole">
+                    <option value="mobile">เฉพาะจอแคบ ≤1000px (แนะนำ)</option>
+                    <option value="always">ทุกขนาดจอ</option>
+                    <option value="off">ปิดชั่วคราว (คง toggle อื่นไว้)</option>
+                </select>
+            </div>
+
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>เลย์เอาต์ข้อความ</b>
+                    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <label class="checkbox_label" for="tinymobile-full-width">
+                        <input id="tinymobile-full-width" type="checkbox" />
+                        <span>ข้อความกว้างเต็มบับเบิ้ล (ย้ายอวตารไปแถวชื่อ)</span>
+                    </label>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-avatar-size">ขนาดอวตารในแชท (px)</label>
+                        <input id="tinymobile-avatar-size" class="text_pole" type="number" min="20" max="60" step="2" />
+                    </div>
+                    <label class="checkbox_label" for="tinymobile-big-tap">
+                        <input id="tinymobile-big-tap" type="checkbox" />
+                        <span>ปุ่มบนข้อความใหญ่ขึ้น (ง่ายต่อการแตะ)</span>
+                    </label>
+                    <label class="checkbox_label" for="tinymobile-compact-bars">
+                        <input id="tinymobile-compact-bars" type="checkbox" />
+                        <span>แถบบน/แถบพิมพ์กระชับขึ้น</span>
+                    </label>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-css-layer">ลำดับชั้น CSS ของเรา</label>
+                        <select id="tinymobile-css-layer" class="text_pole">
+                            <option value="below">ให้ธีม/CSS ที่ผู้ใช้แก้เองชนะ (แนะนำ)</option>
+                            <option value="top">บังคับให้ของเราชนะทุกอย่าง</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>ประสิทธิภาพ</b>
+                    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <label class="checkbox_label" for="tinymobile-perf-cv">
+                        <input id="tinymobile-perf-cv" type="checkbox" />
+                        <span>ข้ามการวาดข้อความที่เลื่อนพ้นจอ (content-visibility)</span>
+                    </label>
+                    <label class="checkbox_label" for="tinymobile-perf-shadows">
+                        <input id="tinymobile-perf-shadows" type="checkbox" />
+                        <span>ลดเงา/filter ที่แพงในแชท</span>
+                    </label>
+                    <label class="checkbox_label" for="tinymobile-perf-contain">
+                        <input id="tinymobile-perf-contain" type="checkbox" />
+                        <span>จำกัดขอบเขตการคำนวณเลย์เอาต์ต่อข้อความ (CSS contain)</span>
+                    </label>
+                    <label class="checkbox_label" for="tinymobile-perf-motion">
+                        <input id="tinymobile-perf-motion" type="checkbox" />
+                        <span>ลดแอนิเมชันในแชท (เฉพาะ CSS ของเรา)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>โหมดมือถือ <small class="tinymobile-hint">(แก้ค่าตั้งค่าของ SillyTavern เอง)</small></b>
+                    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <small>ปุ่มนี้จะไปแก้ "ค่าตั้งค่าผู้ใช้" ของ SillyTavern จริง (ไม่ใช่แค่ CSS ของ TinyMobile) เพื่อลดงานตอน AI พิมพ์ให้มากขึ้นอีกขั้น — เห็นตารางก่อน-หลังแล้วค่อยกดยืนยัน และกดคืนค่าเดิมได้ตลอด</small>
+                    <button type="button" id="tinymobile-preset-preview" class="menu_button">
+                        <i class="fa-solid fa-gauge-high"></i> ดูสิ่งที่จะเปลี่ยน
+                    </button>
+                    <div id="tinymobile-preset-diff" class="tinymobile-preset-diff" style="display:none;"></div>
+                    <button type="button" id="tinymobile-preset-revert" class="menu_button" style="display:none;">
+                        <i class="fa-solid fa-rotate-left"></i> คืนค่าเดิม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
