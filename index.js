@@ -5,7 +5,7 @@
 import { getContext } from "../../../extensions.js";
 import { extensionName, extensionFolderPath, getSettings, getSetting } from "./src/store.js";
 import { reorderToTop } from "./src/css.js";
-import { scheduleSweep, unsweepByMesId, onGenerationStarted, onGenerationEnded, hintAvatarImages } from "./src/perf.js";
+import { scheduleSweep, unsweepByMesId, onGenerationStarted, onGenerationEnded, hintAvatarImages, initResizeWatcher } from "./src/perf.js";
 import { initSettingsUi } from "./src/ui/settings-ui.js";
 
 /** สวีป content-visibility + hint รูปอวตาร — เรียกรวมกันทุกจุดที่ DOM ของแชทอาจเปลี่ยน */
@@ -42,6 +42,14 @@ function bindChatEvents(ctx) {
     // ระหว่างเจน (รวม stream) พักสวีปทั้งหมด — ข้อความล่าสุดเปลี่ยนความสูงถี่ๆ อยู่แล้ว
     ctx.eventSource.on(ctx.eventTypes.GENERATION_STARTED, onGenerationStarted);
     ctx.eventSource.on(ctx.eventTypes.GENERATION_ENDED, onGenerationEnded);
+
+    // กดปุ่ม "แก้ไข" ไม่มี ST event ของตัวเอง — sweepAll() ปกติจะข้ามข้อความนี้ไปเองในรอบถัดไป
+    // (isEligible() กัน .edit_textarea ไว้แล้ว) แต่ถ้าข้อความนี้เคยถูกสวีปไปแล้วก่อนหน้า คลาส/
+    // contain-intrinsic-size เก่าจะค้างอยู่ตลอดที่กำลังแก้ไข ต้องถอดออกทันทีตอนกดปุ่ม ไม่ต้องรอสวีป
+    $(document).on("click", "#chat .mes_edit", function () {
+        const mesId = $(this).closest(".mes").attr("mesid");
+        if (mesId !== undefined) unsweepByMesId(mesId);
+    });
 }
 
 // ===== bootstrap =====
@@ -57,6 +65,7 @@ jQuery(async () => {
 
         const ctx = getContext();
         bindChatEvents(ctx);
+        initResizeWatcher(); // หมุนจอ/เปลี่ยนขนาดหน้าต่าง = ความสูงจริงเปลี่ยนหมด ต้องล้างแล้ววัดใหม่
         sweepAndHint(); // กวาดข้อความที่มีอยู่แล้วตอนโหลดหน้า (เช่นรีเฟรชหน้า)
 
         // ย้าย <style> ของเราไปท้าย <head> อีกครั้งตอน APP_READY ถ้าตั้งค่าไว้เป็น "top" — กันปัญหา

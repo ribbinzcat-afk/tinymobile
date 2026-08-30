@@ -35,6 +35,8 @@ function wrapMedia(css, settings) {
  * เทคนิค full-width อ้างอิงจาก tinytheme/themes/social-feed/theme.css (พิสูจน์แล้วในโปรเจกต์นี้)
  * `:not(.smallSysMes)` ทุกจุด — ข้อความระบบมีโครง/กติกาของตัวเองอยู่แล้ว (style.css:678-695 ของ ST)
  * ไม่ต้องการให้ grid ของเราไปยุ่ง
+ * ทุก selector นำด้วย `#chat ` (G1) — กัน `.mes`/`.mes_button` ที่อยู่นอกแชทจริง (เช่น
+ * `#message_template` ที่ซ่อนไว้เป็นแม่แบบ) โดนไปด้วยโดยไม่ตั้งใจ
  */
 function buildLayoutCss(settings) {
     const parts = [];
@@ -42,16 +44,22 @@ function buildLayoutCss(settings) {
     if (settings.fullWidth) {
         const avatarPx = Math.max(20, Number(settings.avatarSize) || 34);
         parts.push(`
-.mes:not(.smallSysMes) {
+#chat .mes:not(.smallSysMes) {
     display: grid !important;
     grid-template-columns: auto 1fr !important;
     column-gap: 8px !important;
     row-gap: 2px !important;
     align-items: start !important;
     padding: 8px !important;
+    /* ผู้บริโภคตัวแปรนี้ทั้งหมด (เจอจากการวัดจริง ไม่ใช่แค่ที่คาดไว้แต่แรก): .mes_text (padding-right),
+       .mes_reasoning_details (margin-right), .mes_reasoning_summary (margin-right ติดลบคู่กัน — core
+       จับคู่ +30/-30 เพื่อหักล้าง ถ้า zero แค่ฝั่งเดียวหัวข้อ reasoning จะยื่นออกนอกขวา 30px),
+       .mes_media_wrapper และ .mes_file_wrapper (padding-right ทั้งคู่) — แก้ที่ต้นตอตัวแปรเดียว
+       ครบทุกจุดพร้อมกัน แทนไล่ zero รายจุดซึ่งเคยพลาด 3 จุดหลังไปตอนรอบแรก */
+    --mes-right-spacing: 0px !important;
 }
-.mes:not(.smallSysMes) > .for_checkbox,
-.mes:not(.smallSysMes) > input.del_checkbox {
+#chat .mes:not(.smallSysMes) > .for_checkbox,
+#chat .mes:not(.smallSysMes) > input.del_checkbox {
     grid-column: 1 !important;
     grid-row: 1 !important;
 }
@@ -59,12 +67,12 @@ function buildLayoutCss(settings) {
    เจอบั๊กจริงตอนเทส: browser วาง .ch_name ไปแชร์คอลัมน์ 1 กับอวตารแทนที่จะไปคอลัมน์ 2 (คอลัมน์ 1 "auto"
    เลยบวมขึ้นไปตามความกว้างจริงของชื่อ+เวลา แทนที่จะเท่าอวตาร) วัดจริงบน SillyTavern 1.18.0: คอลัมน์ 1
    บวมจาก ~34px เป็น ~118px ก่อนแก้ ต้องกำหนดตำแหน่งตรงๆ ไม่พึ่ง auto-placement */
-.mes:not(.smallSysMes) .ch_name {
+#chat .mes:not(.smallSysMes) .ch_name {
     grid-column: 2 !important;
     grid-row: 1 !important;
     min-width: 0 !important;
 }
-.mes:not(.smallSysMes) .mesAvatarWrapper {
+#chat .mes:not(.smallSysMes) .mesAvatarWrapper {
     grid-column: 1 !important;
     grid-row: 1 !important;
     display: grid !important;
@@ -78,21 +86,29 @@ function buildLayoutCss(settings) {
     padding: 0 !important;
     min-width: 0 !important;
 }
-.mes:not(.smallSysMes) .mesAvatarWrapper .avatar {
+/* min-width/max-width ต้องล้างด้วย ไม่ใช่แค่ width — เจอบั๊กจริงกับแชทกลุ่ม: .avatar_collage ของ
+   core ได้ min-width: var(--avatar-base-width) (50px, ไม่มี !important) แต่ min-width ชนะ width
+   เสมอไม่ว่าจะ !important หรือสเปกเฉพาะแค่ไหน (กติกา box model ล้วนๆ ไม่ใช่เรื่อง cascade) — วัดจริง:
+   ตั้ง width:34px !important เฉยๆ ได้ computed width 50px เต็มๆ ต้อง min-width:0 กำกับด้วยเสมอ
+   (เผื่อโหมด body.big-avatars ที่มี max-width มาคู่กันด้วย ล้างทั้งคู่กันเหนียว) */
+#chat .mes:not(.smallSysMes) .mesAvatarWrapper .avatar {
     grid-row: 1 !important;
     grid-column: 1 / -1 !important;
     justify-self: center !important;
+    min-width: 0 !important;
+    max-width: none !important;
     width: ${avatarPx}px !important;
     height: ${avatarPx}px !important;
+    aspect-ratio: 1 / 1 !important;
 }
-.mes:not(.smallSysMes) .mesAvatarWrapper .avatar img {
+#chat .mes:not(.smallSysMes) .mesAvatarWrapper .avatar img {
     width: 100% !important;
     height: 100% !important;
 }
-.mes:not(.smallSysMes) .mes_timer { grid-row: 2 !important; grid-column: 1 !important; }
-.mes:not(.smallSysMes) .mesIDDisplay { grid-row: 2 !important; grid-column: 2 !important; }
-.mes:not(.smallSysMes) .tokenCounterDisplay { grid-row: 2 !important; grid-column: 3 !important; }
-.mes:not(.smallSysMes) .mes_block {
+#chat .mes:not(.smallSysMes) .mes_timer { grid-row: 2 !important; grid-column: 1 !important; }
+#chat .mes:not(.smallSysMes) .mesIDDisplay { grid-row: 2 !important; grid-column: 2 !important; }
+#chat .mes:not(.smallSysMes) .tokenCounterDisplay { grid-row: 2 !important; grid-column: 3 !important; }
+#chat .mes:not(.smallSysMes) .mes_block {
     display: contents !important;
 }
 /* selector แบบ "ทุกลูกยกเว้น .ch_name" ไม่ใช่ list ชื่อคลาส — extension อื่น (เช่น chat-arcade,
@@ -100,36 +116,42 @@ function buildLayoutCss(settings) {
 /* row: auto (ไม่ตั้งตรงๆ) โดยตั้งใจ — แถว 1 ทั้งสองคอลัมน์ถูกจองด้วยอวตาร+ch_name แล้ว browser จะ
    สร้างแถวใหม่ให้เนื้อหาที่กิน 2 คอลัมน์พร้อมกันเอง (ตรวจแล้วว่า deterministic กับ ch_name ที่ตรึงไว้
    ข้างบน — ถ้าไม่ตรึง ch_name ก่อน จุดนี้จะสุ่มพังตามบั๊กเดียวกัน) */
-.mes:not(.smallSysMes) .mes_block > *:not(.ch_name) {
+#chat .mes:not(.smallSysMes) .mes_block > *:not(.ch_name) {
     grid-column: 1 / -1 !important;
     min-width: 0 !important;
 }
-.mes:not(.smallSysMes) .mes_text {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-.mes:not(.smallSysMes) .mes_text pre,
-.mes:not(.smallSysMes) .mes_text table {
+/* table ใช้ overflow กับตัวเองตรงๆ ไม่ได้ (display:table ไม่รับ overflow เป็นกล่อง scroll) — วัดจริง:
+   ตั้ง overflow-x:auto เฉยๆ ยังคง overflow-x:visible ต้องเปลี่ยน display ก่อนถึงจะมีกล่องให้ scroll */
+#chat .mes:not(.smallSysMes) .mes_text pre {
     overflow-x: auto !important;
     max-width: 100% !important;
 }
-.mes:not(.smallSysMes) .mes_reasoning_details {
-    margin-right: 0 !important;
+#chat .mes:not(.smallSysMes) .mes_text table {
+    display: block !important;
+    overflow-x: auto !important;
+    max-width: 100% !important;
 }
 /* core กันพื้นที่ swipe ด้วย padding ใต้อวตาร (style.css:1412) — อวตารเราเล็กลง/ย้ายแถวแล้ว
-   ต้องกันพื้นที่ใต้ mes_block แทน ไม่งั้นลูกศร swipe (position:absolute มุมล่าง) ทับบรรทัดสุดท้าย */
-.last_mes:not(.smallSysMes) .mesAvatarWrapper {
+   ต้องกันพื้นที่ตรงนี้แทน แต่ห้ามใส่บน .mes_block — display:contents ทำให้มันไม่มีกล่องจริง
+   padding บน element ที่ display:contents ไม่ render เลย (วัดจริง: ใส่ 34px แล้ว getComputedStyle
+   ยังคืน "34px" ทั้งที่ระยะห่างจริงบนจอไม่ขยับเลย ลูกศร swipe ยังทับตัวอักษรบรรทัดสุดท้ายเป๊ะๆ —
+   ต้องใส่บน .mes เอง (ยังเป็น display:grid มีกล่องจริง) ถึงจะมีผล) */
+#chat .mes.last_mes:not(.smallSysMes) .mesAvatarWrapper {
     padding-bottom: 0 !important;
 }
-.last_mes:not(.smallSysMes) .mes_block {
-    padding-bottom: 34px !important;
+/* ค่า 50px วัดจริงจาก DOM ไม่ใช่เดา — ลูกศร swipe (.swipe_left/.swipe_right) กินแถบคงที่
+   [mes_bottom-45px, mes_bottom-20px] เทียบกับขอบล่างของ .mes เสมอ ไม่ว่าข้อความจะสั้นยาวแค่ไหน
+   (ทดลองไล่ค่า 42/44/45/46/48/50: 45px คือจุดที่ข้อความกับลูกศรเพิ่งพอดีไม่ทับกัน 44px ยังทับอยู่ 1px)
+   ใช้ 50 ให้มีระยะหายใจ ~5px แทนที่จะแตะกันพอดี */
+#chat .mes.last_mes:not(.smallSysMes) {
+    padding-bottom: 50px !important;
 }`);
     }
 
     if (settings.bigTapTargets) {
         parts.push(`
-.mes_buttons .mes_button,
-.mes_buttons .extraMesButtons > div {
+#chat .mes_buttons .mes_button,
+#chat .mes_buttons .extraMesButtons > div {
     min-width: 36px !important;
     min-height: 36px !important;
     display: inline-flex !important;
@@ -138,7 +160,7 @@ function buildLayoutCss(settings) {
     opacity: 0.55 !important;
     gap: 6px !important;
 }
-.mes_edit_buttons .menu_button {
+#chat .mes_edit_buttons .menu_button {
     min-width: 36px !important;
     min-height: 36px !important;
 }`);
@@ -175,18 +197,23 @@ function buildPerfCss(settings) {
         parts.push(`
 /* filter: drop-shadow ต่อ element แพงกว่า text-shadow มาก — ปุ่มข้อความมองเห็นจริงแค่ 3-4 ตัว/ข้อความ
    แต่ 100 ข้อความ = ปุ่มหลายร้อยตัวที่ยังคิด filter อยู่แม้ opacity ต่ำ */
-.mes_button,
-.extraMesButtons > div {
+#chat .mes_button,
+#chat .extraMesButtons > div {
     filter: none !important;
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.6) !important;
 }
 /* universal * { text-shadow } ของ core (style.css:139) ตกกับทุก element ในแชท — จำกัดให้เหลือ
-   เฉพาะจุดที่เห็นผลจริง (ข้อความ/ชื่อ) เคารพ --shadowWidth เดิมของผู้ใช้ */
+   เฉพาะจุดที่เห็นผลจริง (ข้อความ/ชื่อ) เคารพ --shadowWidth เดิมของผู้ใช้
+   ต้องคืนให้ "ลูกทุกตัว" ของ mes_text/mes_reasoning ด้วย (* ไม่ใช่แค่ตัวเอง) — ST ห่อเนื้อข้อความ
+   ด้วย <p> เสมอ วัดจริง: ไม่ใส่ '*' แล้ว .mes_text เองได้เงาคืนถูกต้อง แต่ <p> ข้างในที่มีตัวอักษร
+   จริงกลับเป็น none เพราะ '#chat *' (ข้างบน) จับมันไปแล้วและ specificity เท่ากับกฎที่ไม่มี '*' */
 #chat, #chat * {
     text-shadow: none !important;
 }
 #chat .mes_text,
+#chat .mes_text *,
 #chat .mes_reasoning,
+#chat .mes_reasoning *,
 #chat .ch_name .name_text {
     text-shadow: 0px 0px calc(var(--shadowWidth) * 1px) var(--SmartThemeShadowColor) !important;
 }`);
