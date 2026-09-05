@@ -43,6 +43,9 @@ function buildLayoutCss(settings) {
 
     if (settings.fullWidth) {
         const avatarPx = Math.max(20, Number(settings.avatarSize) || 34);
+        // padX คุมซ้าย/ขวา/บนเท่านั้น — ล่างแยกเป็นค่าคงที่ใน .last_mes ด้านล่าง (ดูคอมเมนต์ตรงนั้น)
+        // ข้อความที่ไม่ใช่ .last_mes ใช้ padX เดียวกันทั้ง 4 ด้านได้ ไม่มีลูกศร swipe มากวน
+        const padX = Math.max(8, Math.min(24, Number(settings.bubblePadX) || 14));
         parts.push(`
 #chat .mes:not(.smallSysMes) {
     display: grid !important;
@@ -50,7 +53,7 @@ function buildLayoutCss(settings) {
     column-gap: 8px !important;
     row-gap: 2px !important;
     align-items: start !important;
-    padding: 8px !important;
+    padding: ${padX}px !important;
     /* ผู้บริโภคตัวแปรนี้ทั้งหมด (เจอจากการวัดจริง ไม่ใช่แค่ที่คาดไว้แต่แรก): .mes_text (padding-right),
        .mes_reasoning_details (margin-right), .mes_reasoning_summary (margin-right ติดลบคู่กัน — core
        จับคู่ +30/-30 เพื่อหักล้าง ถ้า zero แค่ฝั่งเดียวหัวข้อ reasoning จะยื่นออกนอกขวา 30px),

@@ -24,6 +24,18 @@ export const defaultSettings = {
     // ── A/B: layout ข้อความ ──
     fullWidth: true,         // ค่าเริ่มต้น: เปิด — เป้าหมายหลักของผู้ใช้
     avatarSize: 34,          // px, ใช้แทน --avatar-base-width/height เฉพาะในบับเบิ้ลแชท
+    bubblePadX: 14,          // px, ระยะขอบซ้าย/ขวา/บนของบับเบิ้ล (เดิม 8px จากกฎ full-width — ผู้ใช้บอกว่าชิดไป)
+                             // ⚠️ ไม่คุม padding-bottom ของ .last_mes — ค่านั้นตรึงที่ 50px เพื่อกันลูกศร
+                             // swipe ทับข้อความ (วัดไว้แล้วรอบ 2: แถบลูกศรกินคงที่ [mes_bottom-45, -20])
+
+    // ── ยุบจาก TinyTheme: ย่อหน้าเยื้อง + ตัวอักษรเนื้อเรื่อง (เฉพาะ .mes_text ไม่ลามไป UI) ──
+    indent: 0,               // % ของ text-indent, 0 = ปิด (ค่าเดิมของ TinyTheme ก่อนยุบ)
+    proseSize: 0,            // px, 0 = ไม่บังคับ (ใช้ค่า --mainFontSize ของ ST ตามปกติ)
+    proseLineHeight: 0,      // ตัวเลข (เช่น 1.6), 0 = ไม่บังคับ
+    proseFont: "theme",      // id ใน FONT_CHOICES (typography-css.js) — "theme" = ไม่บังคับฟอนต์
+
+    // ── ยุบจาก TinyTheme: ซ่อมจุดที่ core ST ใช้สีตายตัวแทนตัวแปรธีม (text_pole/standoutHeader/ฯลฯ) ──
+    themeFix: true,          // ค่าเริ่มต้น: เปิด — เป้าหมายหลักของการยุบรวมรอบนี้
 
     // ── C: ปุ่มบนข้อความใหญ่ขึ้น ──
     bigTapTargets: false,    // ปิดไว้ก่อนตามที่ผู้ใช้เลือก

@@ -9,7 +9,9 @@
                 <input id="tinymobile-enabled" type="checkbox" />
                 <span>เปิดใช้งาน TinyMobile</span>
             </label>
-            <small>ปรับหน้าตาแชทให้เข้ากับมือถือ (ข้อความเต็มบับเบิ้ล) + ลดงาน render ให้ลื่นขึ้น ใช้กับธีมพื้นฐานของ SillyTavern ได้เลย</small>
+            <small>ปรับหน้าตาแชทให้เข้ากับมือถือ (ข้อความเต็มบับเบิ้ล) + ลดงาน render ให้ลื่นขึ้น + ทำให้ UI ทั้งแอปเดินตามสีธีมของ SillyTavern เอง (ยุบรวม TinyTheme เข้ามาแล้ว)</small>
+
+            <div id="tinymobile-collision-warning" class="tinymobile-collision-warning" style="display:none;"></div>
 
             <div class="tinymobile-field-row">
                 <label for="tinymobile-apply-on">ให้ทำงานเมื่อไหร่</label>
@@ -33,6 +35,10 @@
                     <div class="tinymobile-field-row">
                         <label for="tinymobile-avatar-size">ขนาดอวตารในแชท (px)</label>
                         <input id="tinymobile-avatar-size" class="text_pole" type="number" min="20" max="60" step="2" />
+                    </div>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-bubble-padx">ระยะขอบซ้าย/ขวา/บนของบับเบิ้ล <span class="tinymobile-bubble-padx-value"></span></label>
+                        <input id="tinymobile-bubble-padx" type="range" min="8" max="24" step="1" />
                     </div>
                     <label class="checkbox_label" for="tinymobile-big-tap">
                         <input id="tinymobile-big-tap" type="checkbox" />
@@ -74,6 +80,49 @@
                         <input id="tinymobile-perf-motion" type="checkbox" />
                         <span>ลดแอนิเมชันในแชท (เฉพาะ CSS ของเรา)</span>
                     </label>
+                </div>
+            </div>
+
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>สีตามธีม SillyTavern</b>
+                    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <label class="checkbox_label" for="tinymobile-theme-fix">
+                        <input id="tinymobile-theme-fix" type="checkbox" />
+                        <span>ให้กล่องกรอกข้อความ/หัวข้อ/สไลเดอร์/หน้า preset เดินตามสีธีมที่เลือกในแผงตั้งค่า ST</span>
+                    </label>
+                    <small>ยุบมาจาก TinyTheme — แก้จุดที่ SillyTavern เขียนสีตายตัวไว้ (ไม่ใช่แค่ในแชท ครอบคลุมทั้งแอป) ใช้ได้กับทุกธีมของ ST เอง ไม่ต้องพึ่ง Custom CSS อีก</small>
+                </div>
+            </div>
+
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>ตัวอักษร/ย่อหน้าในแชท</b>
+                    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <small>ยุบมาจาก TinyTheme — ใช้เฉพาะกับข้อความในแชท ไม่กระทบตัวอักษรของ UI ส่วนอื่น</small>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-prose-font">ฟอนต์เนื้อเรื่อง</label>
+                        <select id="tinymobile-prose-font" class="text_pole"></select>
+                    </div>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-prose-size">ขนาดตัวอักษร <span class="tinymobile-prose-size-value"></span></label>
+                        <input id="tinymobile-prose-size" type="range" min="0" max="28" step="1" />
+                        <small>0 = ใช้ขนาดตัวอักษรของ ST ตามปกติ</small>
+                    </div>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-prose-line-height">ระยะบรรทัด <span class="tinymobile-prose-line-height-value"></span></label>
+                        <input id="tinymobile-prose-line-height" type="range" min="0" max="2.2" step="0.1" />
+                        <small>0 = ใช้ระยะบรรทัดของ ST ตามปกติ</small>
+                    </div>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-indent">ย่อหน้าเยื้อง <span class="tinymobile-indent-value"></span></label>
+                        <input id="tinymobile-indent" type="range" min="0" max="15" step="1" />
+                        <small>เยื้องเฉพาะย่อหน้าจริง (เว้น 2 บรรทัดขึ้นไป) ไม่กระทบการขึ้นบรรทัดใหม่ปกติ</small>
+                    </div>
                 </div>
             </div>
 
