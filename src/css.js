@@ -41,6 +41,25 @@ function wrapMedia(css, settings) {
 function buildLayoutCss(settings) {
     const parts = [];
 
+    // 🐞 บั๊กจริง (ยืนยันแล้ว, 2026-09-11) — เมนู "..." (extraMesButtons) core ใช้
+    // `flex-wrap: nowrap; justify-content: flex-end; overflow-x: hidden` (style.css:4465-4476)
+    // พอปุ่มรวมกันกว้างเกินแถว (เกิดง่ายมากบนจอมือถือ — ยิ่งมี extension อื่นเพิ่มปุ่มของตัวเองเข้าแถว
+    // เดียวกัน เช่น Scene Captured เพิ่ม 5 ปุ่ม หรือเปิด bigTapTargets ที่บังคับปุ่มกว้างขึ้นเป็น 36px)
+    // `justify-content: flex-end` จะดันปุ่มที่ล้นไปกอง "ก่อนขอบซ้าย" (พิกัดติดลบ) แทนที่จะล้นทางขวา —
+    // ปุ่มแรกๆ เลยหลุดจอไปเงียบๆ กดไม่ได้เลย ไม่ใช่แค่ถูกตัดให้เห็นครึ่งเดียว (วัดจริง: ปุ่มแรกอยู่ที่
+    // x = -449px ขณะกล่องเมนูมองเห็นแค่ 170px) ยืนยันแล้วว่าเป็นบั๊กเดิมของ core เอง (ปิด fullWidth และ
+    // bigTapTargets ทั้งคู่ก็ยังเกิด เพราะแถวปุ่มมาตรฐานของ ST เองก็ชิดขอบพอดีอยู่แล้วบนจอแคบ ยิ่งมี
+    // ปุ่มเสริมจาก extension อื่นก็ยิ่งล้นง่าย) — ไม่ผูกกับ toggle ไหนเป็นพิเศษ ให้ใช้งานได้เสมอตราบใดที่
+    // TinyMobile ทำงานอยู่ (`enabled` + `applyOn`) เพราะเป็นการแก้บั๊กความถูกต้อง ไม่ใช่ทางเลือกสไตล์ —
+    // ไม่มีผลเสียแม้ตอนที่ไม่มีปุ่มล้นจริง (wrap เฉยๆ ไม่กระทบเลย์เอาต์ปกติ)
+    parts.push(`
+#chat .mes_buttons,
+#chat .extraMesButtons {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    row-gap: 4px !important;
+}`);
+
     if (settings.fullWidth) {
         const avatarPx = Math.max(20, Number(settings.avatarSize) || 34);
         // padX คุมซ้าย/ขวา/บนเท่านั้น — ล่างแยกเป็นค่าคงที่ใน .last_mes ด้านล่าง (ดูคอมเมนต์ตรงนั้น)
