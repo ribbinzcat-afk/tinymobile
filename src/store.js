@@ -40,8 +40,25 @@ export const defaultSettings = {
     // ── C: ปุ่มบนข้อความใหญ่ขึ้น ──
     bigTapTargets: false,    // ปิดไว้ก่อนตามที่ผู้ใช้เลือก
 
-    // ── D: แถบพิมพ์/แถบบนกระชับ ──
-    compactBars: false,      // ปิดไว้ก่อนตามที่ผู้ใช้เลือก
+    // ── D: แถบบน/แถบพิมพ์กระชับ — แยก 2 สวิตช์อิสระจากกัน (เดิมเป็นตัวเดียว "compactBars" รวมกัน) ──
+    // ผู้ใช้ขอแยกเพราะ: เดิม toggle เดียวลด --bottomFormIconSize/--bottomFormBlockPadding พร้อมกันหมด
+    // ซึ่ง #send_textarea อ้างความสูงตัวเองจาก --bottomFormBlockSize (=IconSize+BlockPadding, style.css:
+    // 1575-1576) ตรงๆ — กดกระชับแถบพิมพ์เลยได้ผลข้างเคียงว่าช่องพิมพ์ข้อความหดตามไปด้วยโดยไม่ตั้งใจ
+    compactTopBar: false,    // ลดเฉพาะไอคอนแถบบน (--topBarIconSize/--topBarBlockPadding) ไม่แตะช่องพิมพ์เลย
+    compactSendBar: false,   // ลดเฉพาะไอคอนรอบช่องพิมพ์ (--bottomFormIconSize/--bottomFormBlockPadding)
+                             // ยังกระทบความสูงช่องพิมพ์ตามสูตรของ core อยู่ (มันผูกกันในตัวแปรเดียวกัน)
+                             // แต่ปรับ sendInputExtraHeight ด้านล่างชดเชยคืนให้ใหญ่กว่าเดิมได้อิสระ
+
+    // ── ขยายช่องพิมพ์ข้อความ (px) — บวกเพิ่มจากความสูงที่คำนวณไว้เดิมเสมอ ไม่ว่า compactSendBar จะ
+    // เปิดหรือปิด (แก้ปัญหาที่กระชับแถบพิมพ์แล้วช่องพิมพ์เล็กลงจนพิมพ์ไม่สะดวก) 0 = ไม่ขยับ
+    // ต้องหัก #chat ด้วยจำนวนเท่ากัน (style.css:858 คำนวณความสูง #chat จาก --bottomFormBlockSize เดิม
+    // ตรงๆ ถ้าเราขยายช่องพิมพ์แล้วไม่หักคืน #chat จะทับซ้อนกับช่องพิมพ์ที่สูงขึ้น) ดู css.js
+    sendInputExtraHeight: 0,
+
+    // ── ซ่อน scrollbar ในแชท (#chat) — ค่าเริ่มต้น: ปิด (เป็นฟีเจอร์เสริมความสวยงาม ไม่ใช่ฟีเจอร์หลัก
+    // ที่ควรบังคับเปิดให้ทุกคน) ใช้ scrollbar-width:none + ::-webkit-scrollbar{display:none} เหมือน
+    // `.no-scrollbar` ของ core เอง (style.css:5910-5919) แต่เจาะจงแค่ #chat ไม่ใช่ทั้งแอป
+    hideScrollbar: false,
 
     // ── E: performance (ไม่แตะค่า ST) ──
     perfContentVisibility: true,  // content-visibility กับข้อความนอกจอ
@@ -58,6 +75,13 @@ export const defaultSettings = {
 export function getSettings() {
     extension_settings[extensionName] = extension_settings[extensionName] || {};
     const s = extension_settings[extensionName];
+    // migrate: "compactBars" (ตัวเดียว รวมบน+ล่าง) → compactTopBar + compactSendBar (แยก 2 สวิตช์)
+    // เช็คก่อน type-guard ด้านล่าง ไม่งั้น default ใหม่ (false) จะเติมทับจนไม่รู้ว่าผู้ใช้เก่าเคยเปิดไว้
+    if (s.compactBars !== undefined) {
+        if (s.compactTopBar === undefined) s.compactTopBar = s.compactBars;
+        if (s.compactSendBar === undefined) s.compactSendBar = s.compactBars;
+        delete s.compactBars;
+    }
     // type-guard ทุกคีย์ — ผู้ใช้เก่า/เวอร์ชันก่อนหน้าอาจไม่มีคีย์ใหม่
     for (const k of Object.keys(defaultSettings)) {
         if (s[k] === undefined) s[k] = defaultSettings[k];

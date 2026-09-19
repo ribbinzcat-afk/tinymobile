@@ -44,9 +44,22 @@
                         <input id="tinymobile-big-tap" type="checkbox" />
                         <span>ปุ่มบนข้อความใหญ่ขึ้น (ง่ายต่อการแตะ)</span>
                     </label>
-                    <label class="checkbox_label" for="tinymobile-compact-bars">
-                        <input id="tinymobile-compact-bars" type="checkbox" />
-                        <span>แถบบน/แถบพิมพ์กระชับขึ้น</span>
+                    <label class="checkbox_label" for="tinymobile-compact-top-bar">
+                        <input id="tinymobile-compact-top-bar" type="checkbox" />
+                        <span>แถบบนกระชับขึ้น</span>
+                    </label>
+                    <label class="checkbox_label" for="tinymobile-compact-send-bar">
+                        <input id="tinymobile-compact-send-bar" type="checkbox" />
+                        <span>แถบพิมพ์ข้อความกระชับขึ้น (ปุ่มรอบช่องพิมพ์)</span>
+                    </label>
+                    <div class="tinymobile-field-row">
+                        <label for="tinymobile-send-input-height">ขยายช่องพิมพ์ข้อความให้ใหญ่ขึ้น <span class="tinymobile-send-input-height-value"></span></label>
+                        <input id="tinymobile-send-input-height" type="range" min="0" max="60" step="4" />
+                        <small>ทำงานแยกจาก "แถบพิมพ์ข้อความกระชับขึ้น" — เปิดพร้อมกันได้ (ปุ่มรอบข้างเล็กลง แต่ช่องพิมพ์เองใหญ่ขึ้น)</small>
+                    </div>
+                    <label class="checkbox_label" for="tinymobile-hide-scrollbar">
+                        <input id="tinymobile-hide-scrollbar" type="checkbox" />
+                        <span>ซ่อนแถบเลื่อน (scrollbar) ในแชท</span>
                     </label>
                     <div class="tinymobile-field-row">
                         <label for="tinymobile-css-layer">ลำดับชั้น CSS ของเรา</label>

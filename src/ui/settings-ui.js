@@ -51,7 +51,11 @@ function syncControlsFromSettings() {
     $("#tinymobile-bubble-padx").val(s.bubblePadX);
     $(".tinymobile-bubble-padx-value").text(`${s.bubblePadX}px`);
     $("#tinymobile-big-tap").prop("checked", s.bigTapTargets);
-    $("#tinymobile-compact-bars").prop("checked", s.compactBars);
+    $("#tinymobile-compact-top-bar").prop("checked", s.compactTopBar);
+    $("#tinymobile-compact-send-bar").prop("checked", s.compactSendBar);
+    $("#tinymobile-send-input-height").val(s.sendInputExtraHeight);
+    $(".tinymobile-send-input-height-value").text(s.sendInputExtraHeight ? `+${s.sendInputExtraHeight}px` : "ค่าเริ่มต้น");
+    $("#tinymobile-hide-scrollbar").prop("checked", s.hideScrollbar);
     $("#tinymobile-perf-cv").prop("checked", s.perfContentVisibility);
     $("#tinymobile-perf-shadows").prop("checked", s.perfLightShadows);
     $("#tinymobile-perf-contain").prop("checked", s.perfContain);
@@ -181,8 +185,25 @@ export function initSettingsUi() {
         refreshCss();
     });
 
-    $("#tinymobile-compact-bars").on("change", function () {
-        setSetting("compactBars", $(this).prop("checked"));
+    $("#tinymobile-compact-top-bar").on("change", function () {
+        setSetting("compactTopBar", $(this).prop("checked"));
+        refreshCss();
+    });
+
+    $("#tinymobile-compact-send-bar").on("change", function () {
+        setSetting("compactSendBar", $(this).prop("checked"));
+        refreshCss();
+    });
+
+    $("#tinymobile-send-input-height").on("input", function () {
+        const v = Number($(this).val());
+        setSetting("sendInputExtraHeight", v);
+        $(".tinymobile-send-input-height-value").text(v ? `+${v}px` : "ค่าเริ่มต้น");
+        refreshCss();
+    });
+
+    $("#tinymobile-hide-scrollbar").on("change", function () {
+        setSetting("hideScrollbar", $(this).prop("checked"));
         refreshCss();
     });
 

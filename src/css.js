@@ -41,6 +41,19 @@ function wrapMedia(css, settings) {
 function buildLayoutCss(settings) {
     const parts = [];
 
+    if (settings.hideScrollbar) {
+        // เจาะจงแค่ #chat เท่านั้น — ไม่ใช้คลาส `.no-scrollbar` ของ core ตรงๆ (style.css:5910-5919)
+        // เพราะคลาสนั้นเป็น utility กลางที่อาจถูกแปะกับ element อื่นอยู่แล้ว ใช้ selector ตรงๆ ปลอดภัยกว่า
+        // #chat ยังเลื่อนได้ตามปกติ (overflow-y ยังเป็น scroll จาก core) แค่ไม่โชว์แถบเลื่อนเท่านั้น
+        parts.push(`
+#chat {
+    scrollbar-width: none !important;
+}
+#chat::-webkit-scrollbar {
+    display: none !important;
+}`);
+    }
+
     // 🐞 บั๊กจริง (ยืนยันแล้ว, 2026-09-11) — เมนู "..." (extraMesButtons) core ใช้
     // `flex-wrap: nowrap; justify-content: flex-end; overflow-x: hidden` (style.css:4465-4476)
     // พอปุ่มรวมกันกว้างเกินแถว (เกิดง่ายมากบนจอมือถือ — ยิ่งมี extension อื่นเพิ่มปุ่มของตัวเองเข้าแถว
@@ -188,15 +201,40 @@ function buildLayoutCss(settings) {
 }`);
     }
 
-    if (settings.compactBars) {
+    if (settings.compactTopBar) {
+        parts.push(`
+:root {
+    --topBarIconSize: calc(var(--mainFontSize) * 1.6) !important;
+}`);
+    }
+
+    if (settings.compactSendBar) {
         parts.push(`
 :root {
     --bottomFormBlockPadding: calc(var(--mainFontSize) / 4) !important;
     --bottomFormIconSize: calc(var(--mainFontSize) * 1.5) !important;
-    --topBarIconSize: calc(var(--mainFontSize) * 1.6) !important;
 }
 #sheld {
     padding-bottom: max(env(safe-area-inset-bottom), 0px) !important;
+}`);
+    }
+
+    // ขยายช่องพิมพ์ข้อความ — ทำงานอิสระจาก compactSendBar (บวกเพิ่มเสมอไม่ว่าค่าฐานตอนนั้นจะเท่าไหร่)
+    // #send_textarea อ้างความสูงตัวเองจาก --bottomFormBlockSize ตรงๆ (style.css:1575-1576) ต้อง override
+    // ทั้งคู่ (min-height + height) ให้ตรงกัน core เขียนไว้แบบนั้นเหมือนกัน
+    // ต้องหักความสูง #chat ด้วยจำนวนเท่ากันเป๊ะ (style.css:858) ไม่งั้นช่องพิมพ์ที่สูงขึ้นจะไปทับ
+    // ข้อความล่างสุดของแชท เพราะ #chat คำนวณ max-height จาก --bottomFormBlockSize เดิมเท่านั้น
+    // ไม่รู้จักส่วนขยายนี้ (เราไม่ได้แก้ตัวแปร --bottomFormBlockSize ตรงๆ เพราะตัวแปรนั้นยังถูกใช้กำหนด
+    // ขนาดกล่องไอคอนรอบข้างด้วย ถ้าไปแก้จะทำให้ไอคอนใหญ่ขึ้นตามไปด้วยทั้งที่ผู้ใช้ต้องการแค่ช่องพิมพ์)
+    if (settings.sendInputExtraHeight > 0) {
+        const extra = settings.sendInputExtraHeight;
+        parts.push(`
+#send_textarea {
+    min-height: calc(var(--bottomFormBlockSize) + 2px + ${extra}px) !important;
+    height: calc(var(--bottomFormBlockSize) + 2px + ${extra}px) !important;
+}
+#chat {
+    max-height: calc(100vh - calc(var(--topBarBlockSize) + var(--bottomFormBlockSize)) - ${extra}px) !important;
 }`);
     }
 
